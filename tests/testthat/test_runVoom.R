@@ -1,7 +1,5 @@
 context("DGEobj.utils - tests for runVoom.R functions")
 
-skip_on_ci()
-
 test_that('runVoom.R: runVoom()', {
     dgeObj <- t_obj1
     design <- getItem(dgeObj, "design")
@@ -148,11 +146,30 @@ test_that('runVoom.R: runVoom()', {
                            dupCorBlock      = dupcorBlock,
                            runDupCorTwice   = NULL),
                    regexp = msg)
-    expect_warning(runVoom(dgeObj           = dgeObj,
+})
+
+test_that("not an issue? (after the problem block)", ({    ## runDupCorTwice
+    #setup
+    dgeObj <- t_obj1
+    design <- getItem(dgeObj, "design")
+    designMatrix <- model.matrix(~ 0 + ReplicateGroup, design)
+    dgeObj <- addItem(dgeObj   = dgeObj,
+                      item     = designMatrix,
+                      itemName = "designMat",
+                      itemType = "designMatrix")
+
+    #tests
+    msg <- "runDupCorTwice must be a singular logical value. Assigning default value TRUE"
+
+    voom_dgeObj <- runVoom(dgeObj           = dgeObj,
                            designMatrixName = "designMat",
-                           dupCorBlock      = dupcorBlock,
-                           runDupCorTwice        = "FALSE"),
-                   regexp = msg)
+                           runDupCorTwice   = TRUE,
+                           qualityWeights   = FALSE,
+                           mvPlot           = FALSE,
+                           runEBayes        = TRUE,
+                           robust           = TRUE,
+                           proportion       = 0.01)
+
     expect_warning(runVoom(dgeObj           = dgeObj,
                            designMatrixName = "designMat",
                            dupCorBlock      = dupcorBlock,
@@ -233,7 +250,30 @@ test_that('runVoom.R: runVoom()', {
                            dupCorBlock      = "abc"),
                    regexp = msg)
     expect_message(runVoom(dgeObj           = dgeObj,
-                         designMatrixName = "designMat",
-                         var.design       = "abc"),
-                 regexp = msg)
-})
+                           designMatrixName = "designMat",
+                           var.design       = "abc"),
+                   regexp = msg)}))
+
+skip_on_ci()
+
+test_that("problem?",({
+    #setup
+    dgeObj <- t_obj1
+    design <- getItem(dgeObj, "design")
+    designMatrix <- model.matrix(~ 0 + ReplicateGroup, design)
+    dgeObj <- addItem(dgeObj   = dgeObj,
+                      item     = designMatrix,
+                      itemName = "designMat",
+                      itemType = "designMatrix")
+    #tests
+        msg <- "runDupCorTwice must be a singular logical value. Assigning default value TRUE"
+
+    expect_warning(runVoom(dgeObj           = dgeObj,
+                           designMatrixName = "designMat",
+                           dupCorBlock      = dupcorBlock,
+                           runDupCorTwice        = "FALSE"),
+                   regexp = msg)}))
+
+
+
+
