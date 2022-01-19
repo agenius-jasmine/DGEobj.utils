@@ -157,6 +157,7 @@ test_that("not an issue? (after the problem block)", ({    ## runDupCorTwice
                       item     = designMatrix,
                       itemName = "designMat",
                       itemType = "designMatrix")
+#skipped
 
     #tests
     msg <- "runDupCorTwice must be a singular logical value. Assigning default value TRUE"
@@ -192,23 +193,9 @@ test_that("not an issue? (after the problem block)", ({    ## runDupCorTwice
                            dupCorBlock      = dupcorBlock,
                            qualityWeights   = c(FALSE, FALSE)),
                    regexp = msg)
-    ## mvPlot
-    msg <- "mvPlot must be a singular logical value. Assigning default value TRUE"
-    expect_warning(runVoom(dgeObj           = dgeObj,
-                           designMatrixName = "designMat",
-                           dupCorBlock      = dupcorBlock,
-                           mvPlot           = NULL),
-                   regexp = msg)
-    expect_warning(runVoom(dgeObj           = dgeObj,
-                           designMatrixName = "designMat",
-                           dupCorBlock      = dupcorBlock,
-                           mvPlot           = "FALSE"),
-                   regexp = msg)
-    expect_warning(runVoom(dgeObj           = dgeObj,
-                           designMatrixName = "designMat",
-                           dupCorBlock      = dupcorBlock,
-                           mvPlot           = c(FALSE, FALSE)),
-                   regexp = msg)
+
+    #skipped
+
     ## robust
     msg <- "robust must be a singular logical value. Assigning default value TRUE"
     expect_warning(runVoom(dgeObj           = dgeObj,
@@ -254,9 +241,8 @@ test_that("not an issue? (after the problem block)", ({    ## runDupCorTwice
                            var.design       = "abc"),
                    regexp = msg)}))
 
-skip_on_ci()
-
 test_that("problem?",({
+    skip_on_ci()
     #setup
     dgeObj <- t_obj1
     design <- getItem(dgeObj, "design")
@@ -272,7 +258,25 @@ test_that("problem?",({
                            designMatrixName = "designMat",
                            dupCorBlock      = dupcorBlock,
                            runDupCorTwice        = "FALSE"),
-                   regexp = msg)}))
+                   regexp = msg)
+    ## mvPlot
+    msg <- "mvPlot must be a singular logical value. Assigning default value TRUE"
+    expect_warning(runVoom(dgeObj           = dgeObj,
+                           designMatrixName = "designMat",
+                           dupCorBlock      = dupcorBlock,
+                           mvPlot           = NULL),
+                   regexp = msg)
+    expect_warning(runVoom(dgeObj           = dgeObj,
+                           designMatrixName = "designMat",
+                           dupCorBlock      = dupcorBlock,
+                           mvPlot           = "FALSE"),
+                   regexp = msg)
+    expect_warning(runVoom(dgeObj           = dgeObj,
+                           designMatrixName = "designMat",
+                           dupCorBlock      = dupcorBlock,
+                           mvPlot           = c(FALSE, FALSE)),
+                   regexp = msg)
+    }))
 
 
 
